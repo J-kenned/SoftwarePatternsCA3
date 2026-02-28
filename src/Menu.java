@@ -121,29 +121,22 @@ public class Menu extends JFrame{
 							
 							 add.addActionListener(new ActionListener() {
 								public void actionPerformed(ActionEvent e) {
-							
-									
+
+
 						PPS = pPSTextField.getText();
 						firstName = firstNameTextField.getText();
 						surname = surnameTextField.getText();
 						DOB = dOBTextField.getText();
 						password = "";
-					
+
 						CustomerID = "ID"+PPS ;
-						
-					
-						
-						
-						
-						
-						add.addActionListener(new ActionListener() {
-							public void actionPerformed(ActionEvent e) {
+
 								f1.dispose();
-								
+
 								boolean loop = true;
 								while(loop){
-								 password = JOptionPane.showInputDialog(f, "Enter 7 character Password;");
-								
+								 password = JOptionPane.showInputDialog(null, "Enter 7 character Password;");
+
 								 if(password.length() != 7)//Making sure password is 7 characters
 								    {
 								    	JOptionPane.showMessageDialog(null, null, "Password must be 7 charatcers long", JOptionPane.OK_OPTION);
@@ -153,20 +146,14 @@ public class Menu extends JFrame{
 									 loop = false;
 								 }
 								}
-								
-								
-								
-								
+
 							    ArrayList<CustomerAccount> accounts = new ArrayList<CustomerAccount> ();
 										Customer customer = new Customer(PPS, surname, firstName, DOB, CustomerID, password, accounts);
-											
+
 										customerList.add(customer);
-									
-										JOptionPane.showMessageDialog(f, "CustomerID = " + CustomerID +"\n Password = " + password  ,"Customer created.",  JOptionPane.INFORMATION_MESSAGE);
+
+										JOptionPane.showMessageDialog(null, "CustomerID = " + CustomerID +"\n Password = " + password  ,"Customer created.",  JOptionPane.INFORMATION_MESSAGE);
 										menuStart();
-								f.dispose();
-							}
-						});	
 								}
 							});						
 							JButton cancel = new JButton("Cancel");					
@@ -207,7 +194,7 @@ public class Menu extends JFrame{
 					    	}
 					    	else if(reply == JOptionPane.NO_OPTION)
 					    	{
-					    		f1.dispose();
+					    		f.dispose();
 					    		loop = false;
 					    		loop2 = false;
 					    		menuStart();
@@ -230,7 +217,7 @@ public class Menu extends JFrame{
 							    		
 							    	}
 							    	else if(reply == JOptionPane.NO_OPTION){
-							    		f1.dispose();
+							    		f.dispose();
 							    		loop2 = false;
 							    		menuStart();
 							    	}
@@ -244,7 +231,7 @@ public class Menu extends JFrame{
 					    	
 					    if(cont)
 					    {
-						f1.dispose();
+						f.dispose();
 					    	loop = false;
 					    admin();					    
 					    }					    
@@ -1277,7 +1264,7 @@ public class Menu extends JFrame{
 	public void customer(Customer e1)
 	{	
 		f = new JFrame("Customer Menu");
-		e1 = e;
+		e = e1;
 		f.setSize(400, 300);
 		f.setLocation(200, 200);
 		f.addWindowListener(new WindowAdapter() {

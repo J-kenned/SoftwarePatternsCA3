@@ -20,7 +20,7 @@ public class Customer {
 		this.DOB = "";
 		this.customerID = "";
 		this.password = "";
-		this.accounts = null;
+		this.accounts = new ArrayList<CustomerAccount>();
 	}
 	
 	//Constructor with details

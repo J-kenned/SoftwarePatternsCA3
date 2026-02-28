@@ -11,7 +11,7 @@ public class CustomerAccount  {
 	{
 		this.number = "";
 		this.balance = 0;
-		this.transactionList = null;
+		this.transactionList = new ArrayList<AccountTransaction>();
 	}
 	
 	//Constructor with Details
