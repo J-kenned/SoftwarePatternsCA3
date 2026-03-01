@@ -20,6 +20,8 @@ import bank.model.CustomerCurrentAccount;
 import bank.model.Customer;
 import bank.model.AccountTransaction;
 import bank.model.ATMCard;
+import bank.command.DepositCommand;
+import bank.command.WithdrawCommand;
 
 public class Main extends JFrame{
 	
@@ -1492,19 +1494,9 @@ public class Main extends JFrame{
 				
 			
 			String euro = "\u20ac";
-			 acc.setBalance(acc.getBalance() + balance);
-			// String date = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
-			 Date date = new Date();
-			 String date2 = date.toString();
-			 String type = "Lodgement";
-				double amount = balance;
-				
-				
-				
-				
-				AccountTransaction transaction = new AccountTransaction(date2, type, amount);
-				acc.getTransactionList().add(transaction);
-				
+			 DepositCommand depositCmd = new DepositCommand(acc, balance);
+			 depositCmd.execute();
+
 			 JOptionPane.showMessageDialog(f, balance + euro + " added do you account!" ,"Lodgement",  JOptionPane.INFORMATION_MESSAGE);
 			 JOptionPane.showMessageDialog(f, "New balance = " + acc.getBalance() + euro ,"Lodgement",  JOptionPane.INFORMATION_MESSAGE);
 			}
@@ -1563,49 +1555,33 @@ public class Main extends JFrame{
 					
 				}		if(on == true)
 						{
-					String balanceTest = JOptionPane.showInputDialog(f, "Enter amount you wish to withdraw (max 500):");//the isNumeric method tests to see if the string entered was numeric. 
+					String balanceTest = JOptionPane.showInputDialog(f, "Enter amount you wish to withdraw (max 500):");//the isNumeric method tests to see if the string entered was numeric.
 					if(isNumeric(balanceTest))
 					{
-						
+
 						withdraw = Double.parseDouble(balanceTest);
 						loop = false;
-						
-						
-						
+
+
+
 					}
 					else
 					{
 						JOptionPane.showMessageDialog(f, "You must enter a numerical value!" ,"Oops!",  JOptionPane.INFORMATION_MESSAGE);
 					}
-					if(withdraw > 500)
-					{
-						JOptionPane.showMessageDialog(f, "500 is the maximum you can withdraw at a time." ,"Oops!",  JOptionPane.INFORMATION_MESSAGE);
+
+					String euro = "\u20ac";
+					WithdrawCommand withdrawCmd = new WithdrawCommand(acc, withdraw);
+					withdrawCmd.execute();
+
+					if(withdrawCmd.getResultMessage() != null) {
+						JOptionPane.showMessageDialog(f, withdrawCmd.getResultMessage() ,"Oops!",  JOptionPane.INFORMATION_MESSAGE);
 						withdraw = 0;
 					}
-					if(withdraw > acc.getBalance())
-					{
-						JOptionPane.showMessageDialog(f, "Insufficient funds." ,"Oops!",  JOptionPane.INFORMATION_MESSAGE);
-						withdraw = 0;					
+					else {
+						JOptionPane.showMessageDialog(f, withdraw + euro + " withdrawn." ,"Withdraw",  JOptionPane.INFORMATION_MESSAGE);
+						JOptionPane.showMessageDialog(f, "New balance = " + acc.getBalance() + euro ,"Withdraw",  JOptionPane.INFORMATION_MESSAGE);
 					}
-				
-				String euro = "\u20ac";
-				 acc.setBalance(acc.getBalance()-withdraw);
-				   //recording transaction:
-			//		String date = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
-				 Date date = new Date();
-				 String date2 = date.toString();
-				 
-				 String type = "Withdraw";
-					double amount = withdraw;
-					
-		
-					AccountTransaction transaction = new AccountTransaction(date2, type, amount);
-					acc.getTransactionList().add(transaction);
-				 
-				 
-					
-				 JOptionPane.showMessageDialog(f, withdraw + euro + " withdrawn." ,"Withdraw",  JOptionPane.INFORMATION_MESSAGE);
-				 JOptionPane.showMessageDialog(f, "New balance = " + acc.getBalance() + euro ,"Withdraw",  JOptionPane.INFORMATION_MESSAGE);
 				}
 				 
 					
