@@ -14,9 +14,11 @@ import bank.command.admin.ApplyChargesCommand;
 import bank.command.admin.ApplyInterestCommand;
 import bank.command.admin.CreateAccountCommand;
 import bank.command.admin.DeleteCustomerCommand;
+import bank.command.CommandInvoker;
 
 public class Main extends JFrame{
-	
+
+	private CommandInvoker invoker = new CommandInvoker();
 	private ArrayList<Customer> customerList = new ArrayList<Customer>();
     private int position = 0;
 	private String password;
@@ -495,7 +497,7 @@ public class Main extends JFrame{
 							String euro = "\u20ac";
 
 							ApplyChargesCommand chargesCmd = new ApplyChargesCommand(acc);
-							chargesCmd.execute();
+							invoker.executeCommand(chargesCmd);
 
 							JOptionPane.showMessageDialog(f, chargesCmd.getFeeApplied() + euro + " account fee applied."  ,"",  JOptionPane.INFORMATION_MESSAGE);
 							JOptionPane.showMessageDialog(f, "New balance = " + acc.getBalance() ,"Success!",  JOptionPane.INFORMATION_MESSAGE);
@@ -640,7 +642,7 @@ public class Main extends JFrame{
 								loop = false;
 
 								ApplyInterestCommand interestCmd = new ApplyInterestCommand(acc, interest);
-								interestCmd.execute();
+								invoker.executeCommand(interestCmd);
 
 								JOptionPane.showMessageDialog(f, interest + "% interest applied. \n new balance = " + acc.getBalance() + euro ,"Success!",  JOptionPane.INFORMATION_MESSAGE);
 							}
@@ -1099,7 +1101,7 @@ public class Main extends JFrame{
 				        "Account Type", JOptionPane.QUESTION_MESSAGE, null, choices, choices[1]); 
 				    
 				    CreateAccountCommand createCmd = new CreateAccountCommand(customer, account, customerList);
-				    createCmd.execute();
+				    invoker.executeCommand(createCmd);
 
 				    if(account.equals("Current Account"))
 				    {
@@ -1163,7 +1165,7 @@ public class Main extends JFrame{
 						    else
 						    {
 						    	DeleteCustomerCommand deleteCmd = new DeleteCustomerCommand(customer, customerList);
-						    	deleteCmd.execute();
+						    	invoker.executeCommand(deleteCmd);
 						    	if(deleteCmd.isSuccess()) {
 						    		JOptionPane.showMessageDialog(f, deleteCmd.getResultMessage() ,"Success.",  JOptionPane.INFORMATION_MESSAGE);
 						    	}
@@ -1453,7 +1455,7 @@ public class Main extends JFrame{
 			
 			String euro = "\u20ac";
 			 DepositCommand depositCmd = new DepositCommand(acc, balance);
-			 depositCmd.execute();
+			 invoker.executeCommand(depositCmd);
 
 			 JOptionPane.showMessageDialog(f, balance + euro + " added do you account!" ,"Lodgement",  JOptionPane.INFORMATION_MESSAGE);
 			 JOptionPane.showMessageDialog(f, "New balance = " + acc.getBalance() + euro ,"Lodgement",  JOptionPane.INFORMATION_MESSAGE);
@@ -1530,7 +1532,7 @@ public class Main extends JFrame{
 
 					String euro = "\u20ac";
 					WithdrawCommand withdrawCmd = new WithdrawCommand(acc, withdraw);
-					withdrawCmd.execute();
+					invoker.executeCommand(withdrawCmd);
 
 					if(withdrawCmd.getResultMessage() != null) {
 						JOptionPane.showMessageDialog(f, withdrawCmd.getResultMessage() ,"Oops!",  JOptionPane.INFORMATION_MESSAGE);

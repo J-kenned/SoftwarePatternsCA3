@@ -117,3 +117,7 @@ Move models into model dir and rename Menu to Main
 # Commit 5 (feture/command-pattern)
 
  Create admin commands and move customer / admin commands to respective dirs
+ 
+# Commit 6 (feature/command-pattern)
+
+ Added command invoker for hosteoy so we can undo them
