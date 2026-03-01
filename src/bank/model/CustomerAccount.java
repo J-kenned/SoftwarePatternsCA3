@@ -1,4 +1,6 @@
-import java.util.ArrayList; 
+package bank.model;
+
+import java.util.ArrayList;
 
 public class CustomerAccount  {
    

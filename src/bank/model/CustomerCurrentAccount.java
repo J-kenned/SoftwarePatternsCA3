@@ -1,3 +1,5 @@
+package bank.model;
+
 import java.util.ArrayList;
 
 public class CustomerCurrentAccount extends CustomerAccount 

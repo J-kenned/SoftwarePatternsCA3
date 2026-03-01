@@ -105,3 +105,7 @@ found a couple of references to window managers causing this on old java version
 5. Same as above for transations.
 
 6. some weird spacing too
+
+# Commit 3
+
+Move models into model dir and rename Menu to Main

@@ -14,7 +14,14 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-public class Menu extends JFrame{
+import bank.model.CustomerAccount;
+import bank.model.CustomerDepositAccount;
+import bank.model.CustomerCurrentAccount;
+import bank.model.Customer;
+import bank.model.AccountTransaction;
+import bank.model.ATMCard;
+
+public class Main extends JFrame{
 	
 	private ArrayList<Customer> customerList = new ArrayList<Customer>();
     private int position = 0;
@@ -36,7 +43,7 @@ public class Menu extends JFrame{
 	
 	public static void main(String[] args)
 	{
-		Menu driver = new Menu();
+		Main driver = new Main();
 		driver.menuStart();
 	}
 	

@@ -1,3 +1,5 @@
+package bank.model;
+
 public class ATMCard {
  
 	int pin;
