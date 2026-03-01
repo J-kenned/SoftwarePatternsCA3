@@ -2,8 +2,6 @@ package bank.command.admin;
 
 import bank.command.Command;
 import bank.model.CustomerAccount;
-import bank.model.CustomerCurrentAccount;
-import bank.model.CustomerDepositAccount;
 import bank.model.AccountTransaction;
 import java.util.Date;
 
@@ -17,12 +15,7 @@ public class ApplyChargesCommand implements Command {
 	}
 
 	public void execute() {
-		if(account instanceof CustomerDepositAccount) {
-			feeApplied = 25;
-		}
-		if(account instanceof CustomerCurrentAccount) {
-			feeApplied = 15;
-		}
+		feeApplied = account.getFeeStrategy().calculateFee();
 		account.setBalance(account.getBalance() - feeApplied);
 		Date date = new Date();
 		String date2 = date.toString();

@@ -2,7 +2,6 @@ package bank.command.customer;
 
 import bank.command.Command;
 import bank.model.CustomerAccount;
-import bank.model.CustomerCurrentAccount;
 import bank.model.AccountTransaction;
 import java.util.Date;
 
@@ -18,14 +17,12 @@ public class WithdrawCommand implements Command {
 	}
 
 	public void execute() {
-		if(account instanceof CustomerCurrentAccount) {
+		if(!account.getWithdrawalStrategy().canWithdraw(account.getBalance(), amount)) {
 			if(amount > 500) {
 				resultMessage = "500 is the maximum you can withdraw at a time.";
-				return;
+			} else {
+				resultMessage = "Insufficient funds.";
 			}
-		}
-		if(amount > account.getBalance()) {
-			resultMessage = "Insufficient funds.";
 			return;
 		}
 		account.setBalance(account.getBalance() - amount);

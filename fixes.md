@@ -121,3 +121,7 @@ Move models into model dir and rename Menu to Main
 # Commit 6 (feature/command-pattern)
 
  Added command invoker for hosteoy so we can undo them
+ 
+# Commit 7 (feature/stretegy-pattern)
+
+ Add strategies for fees and withdrawals to get rid of instanceof checks
