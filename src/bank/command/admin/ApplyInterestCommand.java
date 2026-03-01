@@ -17,7 +17,7 @@ public class ApplyInterestCommand implements Command {
 	}
 
 	public void execute() {
-		interestApplied = account.getBalance() * (rate / 100);
+		interestApplied = account.getInterestStrategy().calculateInterest(account.getBalance(), rate);
 		account.setBalance(account.getBalance() + interestApplied);
 		Date date = new Date();
 		String date2 = date.toString();

@@ -1,12 +1,18 @@
 package bank.model;
 
 import java.util.ArrayList;
+import bank.strategy.AccountFeeStrategy;
+import bank.strategy.InterestStrategy;
+import bank.strategy.WithdrawalStrategy;
 
 public class CustomerAccount  {
-   
+
 	String number;
 	double balance;
 	ArrayList<AccountTransaction> transactionList = new ArrayList<AccountTransaction>();
+	AccountFeeStrategy feeStrategy;
+	InterestStrategy interestStrategy;
+	WithdrawalStrategy withdrawalStrategy;
 
 	//Blank Constructor
 	public CustomerAccount()
@@ -59,7 +65,20 @@ public class CustomerAccount  {
 	{
 		this.transactionList = transactionList;
 	}
-	
-	
-	
+
+	public AccountFeeStrategy getFeeStrategy()
+	{
+		return this.feeStrategy;
+	}
+
+	public InterestStrategy getInterestStrategy()
+	{
+		return this.interestStrategy;
+	}
+
+	public WithdrawalStrategy getWithdrawalStrategy()
+	{
+		return this.withdrawalStrategy;
+	}
+
 }
