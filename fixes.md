@@ -109,3 +109,15 @@ found a couple of references to window managers causing this on old java version
 # Commit 3
 
 Move models into model dir and rename Menu to Main
+
+# Commit 4 (feature/command-pattern)
+
+ Create interface and concrete classes for Withdraw and Deposit
+ 
+# Commit 5 (feture/command-pattern)
+
+ Create admin commands and move customer / admin commands to respective dirs
+ 
+# Commit 6 (feature/command-pattern)
+
+ Added command invoker for hosteoy so we can undo them
