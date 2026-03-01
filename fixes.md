@@ -125,3 +125,8 @@ Move models into model dir and rename Menu to Main
 # Commit 7 (feature/stretegy-pattern)
 
  Add strategies for fees and withdrawals to get rid of instanceof checks
+ 
+# Commit 8 (feature/factory-pattern)
+
+ Use Account factories in create and delete account factories. I got carried away and made a Singleton CustomerRepository
+ before i committed

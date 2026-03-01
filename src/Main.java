@@ -15,11 +15,15 @@ import bank.command.admin.ApplyInterestCommand;
 import bank.command.admin.CreateAccountCommand;
 import bank.command.admin.DeleteCustomerCommand;
 import bank.command.CommandInvoker;
+import bank.factory.AccountFactory;
+import bank.factory.CurrentAccountFactory;
+import bank.factory.DepositAccountFactory;
+import bank.repository.CustomerRepository;
 
 public class Main extends JFrame{
 
-	private CommandInvoker invoker = new CommandInvoker();
-	private ArrayList<Customer> customerList = new ArrayList<Customer>();
+	private final CommandInvoker invoker = new CommandInvoker();
+	private final CustomerRepository repository = CustomerRepository.getInstance();
     private int position = 0;
 	private String password;
 	private Customer customer = null;
@@ -153,7 +157,7 @@ public class Main extends JFrame{
 							    ArrayList<CustomerAccount> accounts = new ArrayList<CustomerAccount> ();
 										Customer customer = new Customer(PPS, surname, firstName, DOB, CustomerID, password, accounts);
 
-										customerList.add(customer);
+										repository.addCustomer(customer);
 
 										JOptionPane.showMessageDialog(null, "CustomerID = " + CustomerID +"\n Password = " + password  ,"Customer created.",  JOptionPane.INFORMATION_MESSAGE);
 										menuStart();
@@ -252,18 +256,15 @@ public class Main extends JFrame{
 						Customer customer = null;
 					    while(loop)
 					    {
-					    Object customerID = JOptionPane.showInputDialog(f, "Enter Customer ID:");
+					    String customerID = JOptionPane.showInputDialog(f, "Enter Customer ID:");
 					    
-					    for (Customer aCustomer: customerList){
-					    	
-					    	if(aCustomer.getCustomerID().equals(customerID))//search customer list for matching customer ID
-					    	{
-					    		found = true;
-					    		customer = aCustomer;
-					    	}					    	
+					    customer = repository.findCustomerById(customerID);
+					    if(customer != null)
+					    {
+					    	found = true;
 					    }
 					    
-					    if(found == false)
+					    if(!found)
 					    {
 					    	int reply  = JOptionPane.showConfirmDialog(null, null, "User not found. Try again?", JOptionPane.YES_NO_OPTION);
 					    	if (reply == JOptionPane.YES_OPTION) {
@@ -400,7 +401,7 @@ public class Main extends JFrame{
 				
 				boolean found = false;
 			
-				if(customerList.isEmpty())
+				if(repository.isEmpty())
 				{
 					JOptionPane.showMessageDialog(f, "There are no customers yet!"  ,"Oops!",  JOptionPane.INFORMATION_MESSAGE);
 					f.dispose();
@@ -411,19 +412,16 @@ public class Main extends JFrame{
 				{
 			    while(loop)
 			    {
-			    Object customerID = JOptionPane.showInputDialog(f, "Customer ID of Customer You Wish to Apply Charges to:");
+			    String customerID = JOptionPane.showInputDialog(f, "Customer ID of Customer You Wish to Apply Charges to:");
 			    
-			    for (Customer aCustomer: customerList){
-			    	
-			    	if(aCustomer.getCustomerID().equals(customerID))
-			    	{
-			    		found = true;
-			    		customer = aCustomer; 
-			    		loop = false;
-			    	}					    	
+			    customer = repository.findCustomerById(customerID);
+			    if(customer != null)
+			    {
+			    	found = true;
+			    	loop = false;
 			    }
 			    
-			    if(found == false)
+			    if(!found)
 			    {
 			    	int reply  = JOptionPane.showConfirmDialog(null, null, "User not found. Try again?", JOptionPane.YES_NO_OPTION);
 			    	if (reply == JOptionPane.YES_OPTION) {
@@ -532,7 +530,7 @@ public class Main extends JFrame{
 				
 				boolean found = false;
 			
-				if(customerList.isEmpty())
+				if(repository.isEmpty())
 				{
 					JOptionPane.showMessageDialog(f, "There are no customers yet!"  ,"Oops!",  JOptionPane.INFORMATION_MESSAGE);
 					f.dispose();
@@ -543,19 +541,16 @@ public class Main extends JFrame{
 				{
 			    while(loop)
 			    {
-			    Object customerID = JOptionPane.showInputDialog(f, "Customer ID of Customer You Wish to Apply Interest to:");
+			    String customerID = JOptionPane.showInputDialog(f, "Customer ID of Customer You Wish to Apply Interest to:");
 			    
-			    for (Customer aCustomer: customerList){
-			    	
-			    	if(aCustomer.getCustomerID().equals(customerID))
-			    	{
-			    		found = true;
-			    		customer = aCustomer; 
-			    		loop = false;
-			    	}					    	
+			    customer = repository.findCustomerById(customerID);
+			    if(customer != null)
+			    {
+			    	found = true;
+			    	loop = false;
 			    }
 			    
-			    if(found == false)
+			    if(!found)
 			    {
 			    	int reply  = JOptionPane.showConfirmDialog(null, null, "User not found. Try again?", JOptionPane.YES_NO_OPTION);
 			    	if (reply == JOptionPane.YES_OPTION) {
@@ -683,7 +678,7 @@ public class Main extends JFrame{
 			
 				boolean found = false;
 			
-				if(customerList.isEmpty())
+				if(repository.isEmpty())
 				{
 					JOptionPane.showMessageDialog(f, "There are no customers yet!"  ,"Oops!",  JOptionPane.INFORMATION_MESSAGE);
 					f.dispose();
@@ -695,18 +690,15 @@ public class Main extends JFrame{
 				
 			    while(loop)
 			    {
-			    Object customerID = JOptionPane.showInputDialog(f, "Enter Customer ID:");
+			    String customerID = JOptionPane.showInputDialog(f, "Enter Customer ID:");
 			    
-			    for (Customer aCustomer: customerList){
-			    	
-			    	if(aCustomer.getCustomerID().equals(customerID))
-			    	{
-			    		found = true;
-			    		customer = aCustomer;
-			    	}					    	
+			    customer = repository.findCustomerById(customerID);
+			    if(customer != null)
+			    {
+			    	found = true;
 			    }
 			    
-			    if(found == false)
+			    if(!found)
 			    {
 			    	int reply  = JOptionPane.showConfirmDialog(null, null, "User not found. Try again?", JOptionPane.YES_NO_OPTION);
 			    	if (reply == JOptionPane.YES_OPTION) {
@@ -849,12 +841,12 @@ public class Main extends JFrame{
 				JScrollPane scrollPane = new JScrollPane(textArea);
 				textPanel.add(scrollPane);
 				
-			for (int a = 0; a < customerList.size(); a++)//For each customer, for each account, it displays each transaction.
+			for (int a = 0; a < repository.size(); a++)//For each customer, for each account, it displays each transaction.
 				{
-					for (int b = 0; b < customerList.get(a).getAccounts().size(); b ++ )
+					for (int b = 0; b < repository.getCustomers().get(a).getAccounts().size(); b ++ )
 					{
-						acc = customerList.get(a).getAccounts().get(b);
-						for (int c = 0; c < customerList.get(a).getAccounts().get(b).getTransactionList().size(); c++)
+						acc = repository.getCustomers().get(a).getAccounts().get(b);
+						for (int c = 0; c < repository.getCustomers().get(a).getAccounts().get(b).getTransactionList().size(); c++)
 						{
 							
 							textArea.append(acc.getTransactionList().get(c).toString());
@@ -890,7 +882,7 @@ public class Main extends JFrame{
 			public void actionPerformed(ActionEvent ae) {
 				f.dispose();
 				
-				if(customerList.isEmpty())
+				if(repository.isEmpty())
 				{
 					JOptionPane.showMessageDialog(null, "There are currently no customers to display. ");
 					admin();
@@ -928,12 +920,12 @@ public class Main extends JFrame{
 				last = new JButton("Last");
 				cancel = new JButton("Cancel");
 				
-				firstNameTextField.setText(customerList.get(0).getFirstName());
-				surnameTextField.setText(customerList.get(0).getSurname());
-				pPSTextField.setText(customerList.get(0).getPPS());
-				dOBTextField.setText(customerList.get(0).getDOB());
-				customerIDTextField.setText(customerList.get(0).getCustomerID());
-				passwordTextField.setText(customerList.get(0).getPassword());
+				firstNameTextField.setText(repository.getCustomers().getFirst().getFirstName());
+				surnameTextField.setText(repository.getCustomers().getFirst().getSurname());
+				pPSTextField.setText(repository.getCustomers().getFirst().getPPS());
+				dOBTextField.setText(repository.getCustomers().getFirst().getDOB());
+				customerIDTextField.setText(repository.getCustomers().getFirst().getCustomerID());
+				passwordTextField.setText(repository.getCustomers().getFirst().getPassword());
 				
 				firstNameTextField.setEditable(false);
 				surnameTextField.setEditable(false);
@@ -968,12 +960,12 @@ public class Main extends JFrame{
 				first.addActionListener(new ActionListener(  ) {
 					public void actionPerformed(ActionEvent ae) {
 						position = 0;
-						firstNameTextField.setText(customerList.get(0).getFirstName());
-						surnameTextField.setText(customerList.get(0).getSurname());
-						pPSTextField.setText(customerList.get(0).getPPS());
-						dOBTextField.setText(customerList.get(0).getDOB());
-						customerIDTextField.setText(customerList.get(0).getCustomerID());
-						passwordTextField.setText(customerList.get(0).getPassword());				
+						firstNameTextField.setText(repository.getCustomers().getFirst().getFirstName());
+						surnameTextField.setText(repository.getCustomers().getFirst().getSurname());
+						pPSTextField.setText(repository.getCustomers().getFirst().getPPS());
+						dOBTextField.setText(repository.getCustomers().getFirst().getDOB());
+						customerIDTextField.setText(repository.getCustomers().getFirst().getCustomerID());
+						passwordTextField.setText(repository.getCustomers().getFirst().getPassword());
 							}		
 					     });
 				
@@ -988,12 +980,12 @@ public class Main extends JFrame{
 						{
 							position = position - 1;
 							
-						firstNameTextField.setText(customerList.get(position).getFirstName());
-						surnameTextField.setText(customerList.get(position).getSurname());
-						pPSTextField.setText(customerList.get(position).getPPS());
-						dOBTextField.setText(customerList.get(position).getDOB());
-						customerIDTextField.setText(customerList.get(position).getCustomerID());
-						passwordTextField.setText(customerList.get(position).getPassword());
+						firstNameTextField.setText(repository.getCustomers().get(position).getFirstName());
+						surnameTextField.setText(repository.getCustomers().get(position).getSurname());
+						pPSTextField.setText(repository.getCustomers().get(position).getPPS());
+						dOBTextField.setText(repository.getCustomers().get(position).getDOB());
+						customerIDTextField.setText(repository.getCustomers().get(position).getCustomerID());
+						passwordTextField.setText(repository.getCustomers().get(position).getPassword());
 						}			
 							}		
 					     });
@@ -1001,7 +993,7 @@ public class Main extends JFrame{
 				next.addActionListener(new ActionListener(  ) {
 					public void actionPerformed(ActionEvent ae) {
 					
-						if(position == customerList.size()-1)
+						if(position == repository.size()-1)
 						{
 							//don't do anything
 						}
@@ -1009,12 +1001,12 @@ public class Main extends JFrame{
 						{
 							position = position + 1;
 							
-						firstNameTextField.setText(customerList.get(position).getFirstName());
-						surnameTextField.setText(customerList.get(position).getSurname());
-						pPSTextField.setText(customerList.get(position).getPPS());
-						dOBTextField.setText(customerList.get(position).getDOB());
-						customerIDTextField.setText(customerList.get(position).getCustomerID());
-						passwordTextField.setText(customerList.get(position).getPassword());
+						firstNameTextField.setText(repository.getCustomers().get(position).getFirstName());
+						surnameTextField.setText(repository.getCustomers().get(position).getSurname());
+						pPSTextField.setText(repository.getCustomers().get(position).getPPS());
+						dOBTextField.setText(repository.getCustomers().get(position).getDOB());
+						customerIDTextField.setText(repository.getCustomers().get(position).getCustomerID());
+						passwordTextField.setText(repository.getCustomers().get(position).getPassword());
 						}		
 						
 						
@@ -1025,14 +1017,14 @@ public class Main extends JFrame{
 				last.addActionListener(new ActionListener(  ) {
 					public void actionPerformed(ActionEvent ae) {
 					
-						position = customerList.size() - 1;
+						position = repository.size() - 1;
 				
-						firstNameTextField.setText(customerList.get(position).getFirstName());
-						surnameTextField.setText(customerList.get(position).getSurname());
-						pPSTextField.setText(customerList.get(position).getPPS());
-						dOBTextField.setText(customerList.get(position).getDOB());
-						customerIDTextField.setText(customerList.get(position).getCustomerID());
-						passwordTextField.setText(customerList.get(position).getPassword());								
+						firstNameTextField.setText(repository.getCustomers().get(position).getFirstName());
+						surnameTextField.setText(repository.getCustomers().get(position).getSurname());
+						pPSTextField.setText(repository.getCustomers().get(position).getPPS());
+						dOBTextField.setText(repository.getCustomers().get(position).getDOB());
+						customerIDTextField.setText(repository.getCustomers().get(position).getCustomerID());
+						passwordTextField.setText(repository.getCustomers().get(position).getPassword());								
 							}		
 					     });
 				
@@ -1053,7 +1045,7 @@ public class Main extends JFrame{
 			public void actionPerformed(ActionEvent ae) {
 				f.dispose();
 				
-				if(customerList.isEmpty())
+				if(repository.isEmpty())
 				{
 					JOptionPane.showMessageDialog(f, "There are no customers yet!"  ,"Oops!",  JOptionPane.INFORMATION_MESSAGE);
 					f.dispose();
@@ -1067,15 +1059,12 @@ public class Main extends JFrame{
 			
 			    while(loop)
 			    {
-			    Object customerID = JOptionPane.showInputDialog(f, "Customer ID of Customer You Wish to Add an Account to:");
+			    String customerID = JOptionPane.showInputDialog(f, "Customer ID of Customer You Wish to Add an Account to:");
 			    
-			    for (Customer aCustomer: customerList){
-			    	
-			    	if(aCustomer.getCustomerID().equals(customerID))
-			    	{
-			    		found = true;
-			    		customer = aCustomer; 	
-			    	}					    	
+			    customer = repository.findCustomerById(customerID);
+			    if(customer != null)
+			    {
+			    	found = true;
 			    }
 			    
 			    if(found == false)
@@ -1098,19 +1087,32 @@ public class Main extends JFrame{
 			    	//a combo box in an dialog box that asks the admin what type of account they wish to create (deposit/current)
 				    String[] choices = { "Current Account", "Deposit Account" };
 				    String account = (String) JOptionPane.showInputDialog(null, "Please choose account type",
-				        "Account Type", JOptionPane.QUESTION_MESSAGE, null, choices, choices[1]); 
-				    
-				    CreateAccountCommand createCmd = new CreateAccountCommand(customer, account, customerList);
+				        "Account Type", JOptionPane.QUESTION_MESSAGE, null, choices, choices[1]);
+
+				    AccountFactory factory;
+				    switch(account) {
+				        case "Current Account":
+				            factory = new CurrentAccountFactory();
+				            break;
+				        case "Deposit Account":
+				            factory = new DepositAccountFactory();
+				            break;
+				        default:
+				            factory = null;
+				            break;
+				    }
+
+				    CreateAccountCommand createCmd = new CreateAccountCommand(customer, factory);
 				    invoker.executeCommand(createCmd);
 
-				    if(account.equals("Current Account"))
+				    if(factory instanceof CurrentAccountFactory)
 				    {
 				    	JOptionPane.showMessageDialog(f, "Account number = " + createCmd.getAccountNumber() +"\n PIN = " + createCmd.getPin()  ,"Account created.",  JOptionPane.INFORMATION_MESSAGE);
 				    	f.dispose();
 				    	admin();
 				    }
 
-				    if(account.equals("Deposit Account"))
+				    if(factory instanceof DepositAccountFactory)
 				    {
 				    	JOptionPane.showMessageDialog(f, "Account number = " + createCmd.getAccountNumber() ,"Account created.",  JOptionPane.INFORMATION_MESSAGE);
 				    	f.dispose();
@@ -1127,7 +1129,7 @@ public class Main extends JFrame{
 			public void actionPerformed(ActionEvent ae) {
 				boolean found = true, loop = true;
 				
-				if(customerList.isEmpty())
+				if(repository.isEmpty())
 				{
 					JOptionPane.showMessageDialog(null, "There are currently no customers to display. ");
 					dispose();
@@ -1136,19 +1138,16 @@ public class Main extends JFrame{
 				else
 				{
 					 {
-						    Object customerID = JOptionPane.showInputDialog(f, "Customer ID of Customer You Wish to Delete:");
+						    String customerID = JOptionPane.showInputDialog(f, "Customer ID of Customer You Wish to Delete:");
 						    
-						    for (Customer aCustomer: customerList){
-						    	
-						    	if(aCustomer.getCustomerID().equals(customerID))
-						    	{
-						    		found = true;
-						    		customer = aCustomer; 
-						    		loop = false;
-						    	}					    	
+						    customer = repository.findCustomerById(customerID);
+						    if(customer != null)
+						    {
+						    	found = true;
+						    	loop = false;
 						    }
 						    
-						    if(found == false)
+						    if(!found)
 						    {
 						    	int reply  = JOptionPane.showConfirmDialog(null, null, "User not found. Try again?", JOptionPane.YES_NO_OPTION);
 						    	if (reply == JOptionPane.YES_OPTION) {
@@ -1164,7 +1163,7 @@ public class Main extends JFrame{
 						    }  
 						    else
 						    {
-						    	DeleteCustomerCommand deleteCmd = new DeleteCustomerCommand(customer, customerList);
+						    	DeleteCustomerCommand deleteCmd = new DeleteCustomerCommand(customer);
 						    	invoker.executeCommand(deleteCmd);
 						    	if(deleteCmd.isSuccess()) {
 						    		JOptionPane.showMessageDialog(f, deleteCmd.getResultMessage() ,"Success.",  JOptionPane.INFORMATION_MESSAGE);
@@ -1187,19 +1186,16 @@ public class Main extends JFrame{
 				
 				
 					 {
-						    Object customerID = JOptionPane.showInputDialog(f, "Customer ID of Customer from which you wish to delete an account");
+						    String customerID = JOptionPane.showInputDialog(f, "Customer ID of Customer from which you wish to delete an account");
 						    
-						    for (Customer aCustomer: customerList){
-						    	
-						    	if(aCustomer.getCustomerID().equals(customerID))
-						    	{
-						    		found = true;
-						    		customer = aCustomer; 
-						    		loop = false;
-						    	}					    	
+						    customer = repository.findCustomerById(customerID);
+						    if(customer != null)
+						    {
+						    	found = true;
+						    	loop = false;
 						    }
 						    
-						    if(found == false)
+						    if(!found)
 						    {
 						    	int reply  = JOptionPane.showConfirmDialog(null, null, "User not found. Try again?", JOptionPane.YES_NO_OPTION);
 						    	if (reply == JOptionPane.YES_OPTION) {
@@ -1241,7 +1237,7 @@ public class Main extends JFrame{
 		});          
 		f.setVisible(true);
 		
-		if(e.getAccounts().size() == 0)
+		if(e.getAccounts().isEmpty())
 		{
 			JOptionPane.showMessageDialog(f, "This customer does not have any accounts yet. \n An admin must create an account for this customer \n for them to be able to use customer functionality. " ,"Oops!",  JOptionPane.INFORMATION_MESSAGE);
 			f.dispose();				
@@ -1436,7 +1432,7 @@ public class Main extends JFrame{
 				}
 		
 				
-			}		if(on == true)
+			}		if(on)
 					{
 				String balanceTest = JOptionPane.showInputDialog(f, "Enter amount you wish to lodge:");//the isNumeric method tests to see if the string entered was numeric. 
 				if(isNumeric(balanceTest))
@@ -1513,7 +1509,7 @@ public class Main extends JFrame{
 				    
 					
 					
-				}		if(on == true)
+				}		if(on)
 						{
 					String balanceTest = JOptionPane.showInputDialog(f, "Enter amount you wish to withdraw (max 500):");//the isNumeric method tests to see if the string entered was numeric.
 					if(isNumeric(balanceTest))
