@@ -4,24 +4,16 @@ import java.awt.event.*;
 import java.util.ArrayList;
 
 import javax.swing.*;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-
-import javax.swing.text.MaskFormatter;
-import java.util.ArrayList;
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 
 import bank.model.CustomerAccount;
-import bank.model.CustomerDepositAccount;
 import bank.model.CustomerCurrentAccount;
 import bank.model.Customer;
-import bank.model.AccountTransaction;
-import bank.model.ATMCard;
-import bank.command.DepositCommand;
-import bank.command.WithdrawCommand;
+import bank.command.customer.DepositCommand;
+import bank.command.customer.WithdrawCommand;
+import bank.command.admin.ApplyChargesCommand;
+import bank.command.admin.ApplyInterestCommand;
+import bank.command.admin.CreateAccountCommand;
+import bank.command.admin.DeleteCustomerCommand;
 
 public class Main extends JFrame{
 	
@@ -501,30 +493,17 @@ public class Main extends JFrame{
 					continueButton.addActionListener(new ActionListener(  ) {
 						public void actionPerformed(ActionEvent ae) {
 							String euro = "\u20ac";
-						 	
-							
-							if(acc instanceof CustomerDepositAccount)
-							{
-							
-							
-							JOptionPane.showMessageDialog(f, "25" + euro + " deposit account fee aplied."  ,"",  JOptionPane.INFORMATION_MESSAGE);
-							acc.setBalance(acc.getBalance()-25);
-							JOptionPane.showMessageDialog(f, "New balance = " + acc.getBalance() ,"Success!",  JOptionPane.INFORMATION_MESSAGE);
-							}
 
-							if(acc instanceof CustomerCurrentAccount)
-							{
-							
-							
-							JOptionPane.showMessageDialog(f, "15" + euro + " current account fee aplied."  ,"",  JOptionPane.INFORMATION_MESSAGE);
-							acc.setBalance(acc.getBalance()-25);
+							ApplyChargesCommand chargesCmd = new ApplyChargesCommand(acc);
+							chargesCmd.execute();
+
+							JOptionPane.showMessageDialog(f, chargesCmd.getFeeApplied() + euro + " account fee applied."  ,"",  JOptionPane.INFORMATION_MESSAGE);
 							JOptionPane.showMessageDialog(f, "New balance = " + acc.getBalance() ,"Success!",  JOptionPane.INFORMATION_MESSAGE);
-							}
-							
-							
-							f.dispose();				
-						admin();				
-						}		
+
+
+							f.dispose();
+						admin();
+						}
 				     });
 					
 					returnButton.addActionListener(new ActionListener(  ) {
@@ -650,33 +629,34 @@ public class Main extends JFrame{
 							String euro = "\u20ac";
 						 	double interest = 0;
 						 	boolean loop = true;
-						 	
+
 						 	while(loop)
 						 	{
-							String interestString = JOptionPane.showInputDialog(f, "Enter interest percentage you wish to apply: \n NOTE: Please enter a numerical value. (with no percentage sign) \n E.g: If you wish to apply 8% interest, enter '8'");//the isNumeric method tests to see if the string entered was numeric. 
+							String interestString = JOptionPane.showInputDialog(f, "Enter interest percentage you wish to apply: \n NOTE: Please enter a numerical value. (with no percentage sign) \n E.g: If you wish to apply 8% interest, enter '8'");//the isNumeric method tests to see if the string entered was numeric.
 							if(isNumeric(interestString))
 							{
-								
+
 								interest = Double.parseDouble(interestString);
 								loop = false;
-								
-								acc.setBalance(acc.getBalance() + (acc.getBalance() * (interest/100)));
-								
+
+								ApplyInterestCommand interestCmd = new ApplyInterestCommand(acc, interest);
+								interestCmd.execute();
+
 								JOptionPane.showMessageDialog(f, interest + "% interest applied. \n new balance = " + acc.getBalance() + euro ,"Success!",  JOptionPane.INFORMATION_MESSAGE);
 							}
-								
-							
+
+
 							else
 							{
 								JOptionPane.showMessageDialog(f, "You must enter a numerical value!" ,"Oops!",  JOptionPane.INFORMATION_MESSAGE);
 							}
-							
-							
+
+
 						 	}
-							
-							f.dispose();				
-						admin();				
-						}		
+
+							f.dispose();
+						admin();
+						}
 				     });
 					
 					returnButton.addActionListener(new ActionListener(  ) {
@@ -1118,40 +1098,19 @@ public class Main extends JFrame{
 				    String account = (String) JOptionPane.showInputDialog(null, "Please choose account type",
 				        "Account Type", JOptionPane.QUESTION_MESSAGE, null, choices, choices[1]); 
 				    
+				    CreateAccountCommand createCmd = new CreateAccountCommand(customer, account, customerList);
+				    createCmd.execute();
+
 				    if(account.equals("Current Account"))
 				    {
-				    	//create current account
-				    	boolean valid = true;
-				    	double balance = 0;
-				    	String number = String.valueOf("C" + (customerList.indexOf(customer)+1) * 10 + (customer.getAccounts().size()+1));//this simple algorithm generates the account number
-				    	ArrayList<AccountTransaction> transactionList = new ArrayList<AccountTransaction>();
-				    	int randomPIN = (int)(Math.random()*9000)+1000;
-				           String pin = String.valueOf(randomPIN);
-				    
-				           ATMCard atm = new ATMCard(randomPIN, valid);
-				    	
-				    	CustomerCurrentAccount current = new CustomerCurrentAccount(atm, number, balance, transactionList);
-				    	
-				    	customer.getAccounts().add(current);
-				    	JOptionPane.showMessageDialog(f, "Account number = " + number +"\n PIN = " + pin  ,"Account created.",  JOptionPane.INFORMATION_MESSAGE);
-				    	
+				    	JOptionPane.showMessageDialog(f, "Account number = " + createCmd.getAccountNumber() +"\n PIN = " + createCmd.getPin()  ,"Account created.",  JOptionPane.INFORMATION_MESSAGE);
 				    	f.dispose();
 				    	admin();
 				    }
-				    
+
 				    if(account.equals("Deposit Account"))
 				    {
-				    	//create deposit account
-				    	
-				    	double balance = 0, interest = 0;
-				    	String number = String.valueOf("D" + (customerList.indexOf(customer)+1) * 10 + (customer.getAccounts().size()+1));//this simple algorithm generates the account number
-				    	ArrayList<AccountTransaction> transactionList = new ArrayList<AccountTransaction>();
-				        	
-				    	CustomerDepositAccount deposit = new CustomerDepositAccount(interest, number, balance, transactionList);
-				    	
-				    	customer.getAccounts().add(deposit);
-				    	JOptionPane.showMessageDialog(f, "Account number = " + number ,"Account created.",  JOptionPane.INFORMATION_MESSAGE);
-				    	
+				    	JOptionPane.showMessageDialog(f, "Account number = " + createCmd.getAccountNumber() ,"Account created.",  JOptionPane.INFORMATION_MESSAGE);
 				    	f.dispose();
 				    	admin();
 				    }
@@ -1203,14 +1162,13 @@ public class Main extends JFrame{
 						    }  
 						    else
 						    {
-						    	if(customer.getAccounts().size()>0)
-						    	{
-						    		JOptionPane.showMessageDialog(f, "This customer has accounts. \n You must delete a customer's accounts before deleting a customer " ,"Oops!",  JOptionPane.INFORMATION_MESSAGE);
+						    	DeleteCustomerCommand deleteCmd = new DeleteCustomerCommand(customer, customerList);
+						    	deleteCmd.execute();
+						    	if(deleteCmd.isSuccess()) {
+						    		JOptionPane.showMessageDialog(f, deleteCmd.getResultMessage() ,"Success.",  JOptionPane.INFORMATION_MESSAGE);
 						    	}
-						    	else
-						    	{
-						    		customerList.remove(customer);
-						    		JOptionPane.showMessageDialog(f, "Customer Deleted " ,"Success.",  JOptionPane.INFORMATION_MESSAGE);
+						    	else {
+						    		JOptionPane.showMessageDialog(f, deleteCmd.getResultMessage() ,"Oops!",  JOptionPane.INFORMATION_MESSAGE);
 						    	}
 						    }
 						    

@@ -1,5 +1,6 @@
-package bank.command;
+package bank.command.customer;
 
+import bank.command.Command;
 import bank.model.CustomerAccount;
 import bank.model.CustomerCurrentAccount;
 import bank.model.AccountTransaction;
