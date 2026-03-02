@@ -143,3 +143,14 @@ Create abstract template class that runs authenticate, request amount and create
 # Commit 11 (feature/facade-pattern)
 
  Encapsulate admin and customer login flows. Main will delegate to Authentication facade for auth
+ 
+# Commit 12 (feature/facade-pattern)
+
+Entire Admin UI is in AdminOperations Facade, uses Runnable callbacks for nav
+
+Fixed some bugs for the view all customers list where the index would go out of bounds.
+
+Same for a NPE i get when I press cancel on lodge / withdraw amount.
+
+Implimented the Delete account that was half commented out and the running total. 
+
