@@ -130,3 +130,8 @@ Move models into model dir and rename Menu to Main
 
  Use Account factories in create and delete account factories. I got carried away and made a Singleton CustomerRepository
  before i committed
+ 
+# Commit 9 (feature/template-method)
+
+ Create templates for customer lookup, next is lodgement auth and withdrawal. Defined an abstract class which encapsulates the lookup
+ operation while allowing concrete classes to define `onCancel`

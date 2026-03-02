@@ -19,6 +19,7 @@ import bank.factory.AccountFactory;
 import bank.factory.CurrentAccountFactory;
 import bank.factory.DepositAccountFactory;
 import bank.repository.CustomerRepository;
+import bank.template.CustomerLookup;
 
 public class Main extends JFrame{
 
@@ -250,41 +251,16 @@ public class Main extends JFrame{
 					//if user selects CUSTOMER ---------------------------------------------------------------------------------------- 
 					if(user.equals("Customer")	)
 					{
-						boolean loop = true, loop2 = true;
+						boolean loop2 = true;
 						boolean cont = false;
-						boolean found = false;
-						Customer customer = null;
-					    while(loop)
-					    {
-					    String customerID = JOptionPane.showInputDialog(f, "Enter Customer ID:");
-					    
-					    customer = repository.findCustomerById(customerID);
-					    if(customer != null)
-					    {
-					    	found = true;
-					    }
-					    
-					    if(!found)
-					    {
-					    	int reply  = JOptionPane.showConfirmDialog(null, null, "User not found. Try again?", JOptionPane.YES_NO_OPTION);
-					    	if (reply == JOptionPane.YES_OPTION) {
-					    		loop = true;
-					    	}
-					    	else if(reply == JOptionPane.NO_OPTION)
-					    	{
-					    		f.dispose();
-					    		loop = false;
-					    		loop2 = false;
-					    		menuStart();
-					    	}
-					    }
-					    else
-					    {
-					    	loop = false;
-					    }
-					   
-					    }
-					    
+						Customer customer = new CustomerLookup(f, "Enter Customer ID:") {
+							protected void onCancel() {
+								f.dispose();
+								menuStart();
+							}
+						}.lookup();
+
+					    if(customer != null) {
 					    while(loop2)
 					    {
 					    	Object customerPassword = JOptionPane.showInputDialog(f, "Enter Customer Password;");
@@ -311,9 +287,9 @@ public class Main extends JFrame{
 					    if(cont)
 					    {
 						f.dispose();
-					    	loop = false;
-					    	customer(customer);				    
-					    }				    
+					    	customer(customer);
+					    }
+					    }
 					}
 					//-----------------------------------------------------------------------------------------------------------------------
 				}
@@ -396,47 +372,25 @@ public class Main extends JFrame{
 		
 		bankChargesButton.addActionListener(new ActionListener(  ) {
 			public void actionPerformed(ActionEvent ae) {
-				
-				boolean loop = true;
-				
-				boolean found = false;
-			
+
 				if(repository.isEmpty())
 				{
 					JOptionPane.showMessageDialog(f, "There are no customers yet!"  ,"Oops!",  JOptionPane.INFORMATION_MESSAGE);
 					f.dispose();
 					admin();
-					
+
 				}
 				else
 				{
-			    while(loop)
-			    {
-			    String customerID = JOptionPane.showInputDialog(f, "Customer ID of Customer You Wish to Apply Charges to:");
-			    
-			    customer = repository.findCustomerById(customerID);
-			    if(customer != null)
-			    {
-			    	found = true;
-			    	loop = false;
-			    }
-			    
-			    if(!found)
-			    {
-			    	int reply  = JOptionPane.showConfirmDialog(null, null, "User not found. Try again?", JOptionPane.YES_NO_OPTION);
-			    	if (reply == JOptionPane.YES_OPTION) {
-			    		loop = true;
-			    	}
-			    	else if(reply == JOptionPane.NO_OPTION)
-			    	{
-			    		f.dispose();
-			    		loop = false;
-			    	
-			    		admin();
-			    	}
-			    }  
-			    else
-			    {
+			    Customer result = new CustomerLookup(f, "Customer ID of Customer You Wish to Apply Charges to:") {
+			    	protected void onCancel() {
+						f.dispose();
+						admin();
+					}
+			    }.lookup();
+
+				if(result != null) {
+			    	customer = result;
 			    	f.dispose();
 			    	f = new JFrame("Administrator Menu");
 					f.setSize(400, 300);
@@ -516,56 +470,32 @@ public class Main extends JFrame{
 						}
 			    }
 			    }
-			    }
-			    
-			    
-			    
-			}		
+
+
+			}
 	     });
-		
+
 		interestButton.addActionListener(new ActionListener(  ) {
 			public void actionPerformed(ActionEvent ae) {
 
-				boolean loop = true;
-				
-				boolean found = false;
-			
 				if(repository.isEmpty())
 				{
 					JOptionPane.showMessageDialog(f, "There are no customers yet!"  ,"Oops!",  JOptionPane.INFORMATION_MESSAGE);
 					f.dispose();
 					admin();
-					
+
 				}
 				else
 				{
-			    while(loop)
-			    {
-			    String customerID = JOptionPane.showInputDialog(f, "Customer ID of Customer You Wish to Apply Interest to:");
-			    
-			    customer = repository.findCustomerById(customerID);
-			    if(customer != null)
-			    {
-			    	found = true;
-			    	loop = false;
-			    }
-			    
-			    if(!found)
-			    {
-			    	int reply  = JOptionPane.showConfirmDialog(null, null, "User not found. Try again?", JOptionPane.YES_NO_OPTION);
-			    	if (reply == JOptionPane.YES_OPTION) {
-			    		loop = true;
-			    	}
-			    	else if(reply == JOptionPane.NO_OPTION)
-			    	{
-			    		f.dispose();
-			    		loop = false;
-			    	
-			    		admin();
-			    	}
-			    }  
-			    else
-			    {
+			    Customer result = new CustomerLookup(f, "Customer ID of Customer You Wish to Apply Interest to:") {
+			    	protected void onCancel() {
+						f.dispose();
+						admin();
+					}
+			    }.lookup();
+
+			    if(result != null) {
+			    	customer = result;
 			    	f.dispose();
 			    	f = new JFrame("Administrator Menu");
 					f.setSize(400, 300);
@@ -658,66 +588,40 @@ public class Main extends JFrame{
 					
 					returnButton.addActionListener(new ActionListener(  ) {
 						public void actionPerformed(ActionEvent ae) {
-							f.dispose();		
-							menuStart();				
+							f.dispose();
+							menuStart();
 						}
-				     });	
-					
+				     });
+
 						}
 			    }
 			    }
-			    }
-			    
-			}	
+
+			}
 	     });
-		
+
 		editCustomerButton.addActionListener(new ActionListener(  ) {
 			public void actionPerformed(ActionEvent ae) {
-				
-				boolean loop = true;
-			
-				boolean found = false;
-			
+
 				if(repository.isEmpty())
 				{
 					JOptionPane.showMessageDialog(f, "There are no customers yet!"  ,"Oops!",  JOptionPane.INFORMATION_MESSAGE);
 					f.dispose();
 					admin();
-					
+
 				}
 				else
 				{
-				
-			    while(loop)
-			    {
-			    String customerID = JOptionPane.showInputDialog(f, "Enter Customer ID:");
-			    
-			    customer = repository.findCustomerById(customerID);
-			    if(customer != null)
-			    {
-			    	found = true;
-			    }
-			    
-			    if(!found)
-			    {
-			    	int reply  = JOptionPane.showConfirmDialog(null, null, "User not found. Try again?", JOptionPane.YES_NO_OPTION);
-			    	if (reply == JOptionPane.YES_OPTION) {
-			    		loop = true;
-			    	}
-			    	else if(reply == JOptionPane.NO_OPTION)
-			    	{
-			    		f.dispose();
-			    		loop = false;
-			    	
-			    		admin();
-			    	}
-			    }
-			    else
-			    {
-			    	loop = false;
-			    }
-			   
-			    }
+
+			    Customer result = new CustomerLookup(f, "Enter Customer ID:") {
+			    	protected void onCancel() {
+						f.dispose();
+						admin();
+					}
+			    }.lookup();
+
+			    if(result != null) {
+				customer = result;
 				
 				f.dispose();
 				
@@ -803,44 +707,43 @@ public class Main extends JFrame{
 				cancelButton.addActionListener(new ActionListener(  ) {
 					public void actionPerformed(ActionEvent ae) {
 						f.dispose();
-						
-						admin();				
-					}		
-			     });		
-				}}
+						admin();
+					}
+			     });
+				}}}
 	     });
-		
+
 		summaryButton.addActionListener(new ActionListener(  ) {
 			public void actionPerformed(ActionEvent ae) {
 				f.dispose();
-				
-				
+
+
 				f = new JFrame("Summary of Transactions");
 				f.setSize(400, 700);
 				f.setLocation(200, 200);
 				f.addWindowListener(new WindowAdapter() {
 					public void windowClosing(WindowEvent we) { System.exit(0); }
-				});          
+				});
 				f.setVisible(true);
-				
+
 				JLabel label1 = new JLabel("Summary of all transactions: ");
-				
+
 				JPanel returnPanel = new JPanel();
 				JButton returnButton = new JButton("Return");
 				returnPanel.add(returnButton);
-				
+
 				JPanel textPanel = new JPanel();
-				
+
 				textPanel.setLayout( new BorderLayout() );
 				JTextArea textArea = new JTextArea(40, 20);
 				textArea.setEditable(false);
 				textPanel.add(label1, BorderLayout.NORTH);
 				textPanel.add(textArea, BorderLayout.CENTER);
 				textPanel.add(returnButton, BorderLayout.SOUTH);
-				
+
 				JScrollPane scrollPane = new JScrollPane(textArea);
 				textPanel.add(scrollPane);
-				
+
 			for (int a = 0; a < repository.size(); a++)//For each customer, for each account, it displays each transaction.
 				{
 					for (int b = 0; b < repository.getCustomers().get(a).getAccounts().size(); b ++ )
@@ -848,34 +751,34 @@ public class Main extends JFrame{
 						acc = repository.getCustomers().get(a).getAccounts().get(b);
 						for (int c = 0; c < repository.getCustomers().get(a).getAccounts().get(b).getTransactionList().size(); c++)
 						{
-							
+
 							textArea.append(acc.getTransactionList().get(c).toString());
 							//Int total = acc.getTransactionList().get(c).getAmount(); //I was going to use this to keep a running total but I couldnt get it  working.
-							
-						}				
-					}				
+
+						}
+					}
 				}
-				
-				
-				
-				
+
+
+
+
 				textPanel.add(textArea);
 				content.removeAll();
-				
-				
+
+
 				Container content = f.getContentPane();
 				content.setLayout(new GridLayout(1, 1));
 			//	content.add(label1);
 				content.add(textPanel);
 				//content.add(returnPanel);
-				
+
 				returnButton.addActionListener(new ActionListener(  ) {
 					public void actionPerformed(ActionEvent ae) {
-						f.dispose();			
-					admin();				
-					}		
-			     });	
-			}	
+						f.dispose();
+					admin();
+					}
+			     });
+			}
 	     });
 		
 		navigateButton.addActionListener(new ActionListener(  ) {
@@ -1044,7 +947,7 @@ public class Main extends JFrame{
 		accountButton.addActionListener(new ActionListener(  ) {
 			public void actionPerformed(ActionEvent ae) {
 				f.dispose();
-				
+
 				if(repository.isEmpty())
 				{
 					JOptionPane.showMessageDialog(f, "There are no customers yet!"  ,"Oops!",  JOptionPane.INFORMATION_MESSAGE);
@@ -1053,37 +956,16 @@ public class Main extends JFrame{
 				}
 				else
 				{
-				boolean loop = true;
-				
-				boolean found = false;
-			
-			    while(loop)
-			    {
-			    String customerID = JOptionPane.showInputDialog(f, "Customer ID of Customer You Wish to Add an Account to:");
-			    
-			    customer = repository.findCustomerById(customerID);
-			    if(customer != null)
-			    {
-			    	found = true;
-			    }
-			    
-			    if(found == false)
-			    {
-			    	int reply  = JOptionPane.showConfirmDialog(null, null, "User not found. Try again?", JOptionPane.YES_NO_OPTION);
-			    	if (reply == JOptionPane.YES_OPTION) {
-			    		loop = true;
-			    	}
-			    	else if(reply == JOptionPane.NO_OPTION)
-			    	{
-			    		f.dispose();
-			    		loop = false;
-			    	
-			    		admin();
-			    	}
-			    }
-			    else
-			    {
-			    	loop = false;
+
+			    Customer result = new CustomerLookup(f, "Customer ID of Customer You Wish to Add an Account to:") {
+			    	protected void onCancel() {
+						f.dispose();
+						admin();
+					}
+			    }.lookup();
+
+			    if(result != null) {
+			    	customer = result;
 			    	//a combo box in an dialog box that asks the admin what type of account they wish to create (deposit/current)
 				    String[] choices = { "Current Account", "Deposit Account" };
 				    String account = (String) JOptionPane.showInputDialog(null, "Please choose account type",
@@ -1118,17 +1000,15 @@ public class Main extends JFrame{
 				    	f.dispose();
 				    	admin();
 				    }
-			    
-			    }			   
+
 			    }
 				}
 			}
-	     });		
+	     });
 
 		deleteCustomer.addActionListener(new ActionListener(  ) {
 			public void actionPerformed(ActionEvent ae) {
-				boolean found = true, loop = true;
-				
+
 				if(repository.isEmpty())
 				{
 					JOptionPane.showMessageDialog(null, "There are currently no customers to display. ");
@@ -1137,32 +1017,14 @@ public class Main extends JFrame{
 				}
 				else
 				{
-					 {
-						    String customerID = JOptionPane.showInputDialog(f, "Customer ID of Customer You Wish to Delete:");
-						    
-						    customer = repository.findCustomerById(customerID);
-						    if(customer != null)
-						    {
-						    	found = true;
-						    	loop = false;
-						    }
-						    
-						    if(!found)
-						    {
-						    	int reply  = JOptionPane.showConfirmDialog(null, null, "User not found. Try again?", JOptionPane.YES_NO_OPTION);
-						    	if (reply == JOptionPane.YES_OPTION) {
-						    		loop = true;
-						    	}
-						    	else if(reply == JOptionPane.NO_OPTION)
-						    	{
-						    		f.dispose();
-						    		loop = false;
-						    		
-						    		admin();
-						    	}
-						    }  
-						    else
-						    {
+					Customer result = new CustomerLookup(f, "Customer ID of Customer You Wish to Delete:") {
+						protected void onCancel() {
+							f.dispose();
+							admin();
+						}
+					}.lookup();
+					if(result != null) {
+						customer = result;
 						    	DeleteCustomerCommand deleteCmd = new DeleteCustomerCommand(customer);
 						    	invoker.executeCommand(deleteCmd);
 						    	if(deleteCmd.isSuccess()) {
@@ -1172,52 +1034,31 @@ public class Main extends JFrame{
 						    		JOptionPane.showMessageDialog(f, deleteCmd.getResultMessage() ,"Oops!",  JOptionPane.INFORMATION_MESSAGE);
 						    	}
 						    }
-						    
-						    
-				}}
+
+
+				}
 			}
-	     });		
-		
+	     });
+
 		deleteAccount.addActionListener(new ActionListener(  ) {
 			public void actionPerformed(ActionEvent ae) {
-	boolean found = true, loop = true;
-				
-				
-				
-				
-					 {
-						    String customerID = JOptionPane.showInputDialog(f, "Customer ID of Customer from which you wish to delete an account");
-						    
-						    customer = repository.findCustomerById(customerID);
-						    if(customer != null)
-						    {
-						    	found = true;
-						    	loop = false;
-						    }
-						    
-						    if(!found)
-						    {
-						    	int reply  = JOptionPane.showConfirmDialog(null, null, "User not found. Try again?", JOptionPane.YES_NO_OPTION);
-						    	if (reply == JOptionPane.YES_OPTION) {
-						    		loop = true;
-						    	}
-						    	else if(reply == JOptionPane.NO_OPTION)
-						    	{
-						    		f.dispose();
-						    		loop = false;
-						    	
-						    		admin();
-						    	}
-						    }  
-						    else
-						    {
+
+				Customer result = new CustomerLookup(f, "Customer ID of Customer from which you wish to delete an account") {
+					protected void onCancel() {
+						f.dispose();
+						admin();
+					}
+				}.lookup();
+
+				if(result != null) {
+					customer = result;
 						    	//Here I would make the user select a an account to delete from a combo box. If the account had a balance of 0 then it would be deleted. (I do not have time to do this)
 						    }
-						    
-						    
-				}}
-			
-	     });		
+
+
+				}
+
+	     });
 		returnButton.addActionListener(new ActionListener(  ) {
 			public void actionPerformed(ActionEvent ae) {
 				f.dispose();
