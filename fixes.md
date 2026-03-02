@@ -135,3 +135,7 @@ Move models into model dir and rename Menu to Main
 
  Create templates for customer lookup, next is lodgement auth and withdrawal. Defined an abstract class which encapsulates the lookup
  operation while allowing concrete classes to define `onCancel`
+ 
+# Commit 10 (feature/template-method)
+
+Create abstract template class that runs authenticate, request amount and create command. concrete classes prompt for amount and creates either deposit or withdraw command, handles error / succes messages
