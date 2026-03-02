@@ -139,3 +139,7 @@ Move models into model dir and rename Menu to Main
 # Commit 10 (feature/template-method)
 
 Create abstract template class that runs authenticate, request amount and create command. concrete classes prompt for amount and creates either deposit or withdraw command, handles error / succes messages
+
+# Commit 11 (feature/facade-pattern)
+
+ Encapsulate admin and customer login flows. Main will delegate to Authentication facade for auth

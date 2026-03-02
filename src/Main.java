@@ -19,6 +19,7 @@ import bank.repository.CustomerRepository;
 import bank.template.CustomerLookup;
 import bank.template.LodgementTransaction;
 import bank.template.WithdrawalTransaction;
+import bank.facade.Authentication;
 
 public class Main extends JFrame{
 
@@ -187,61 +188,14 @@ public class Main extends JFrame{
 					//if user select ADMIN----------------------------------------------------------------------------------------------
 					if(user.equals("Administrator")	)
 					{
-						boolean loop = true, loop2 = true;
-						boolean cont = false;
-					    while(loop)
-					    {
-					    Object adminUsername = JOptionPane.showInputDialog(f, "Enter Administrator Username:");
-
-					    if(!adminUsername.equals("admin"))//search admin list for admin with matching admin username
-					    {
-					    	int reply  = JOptionPane.showConfirmDialog(null, null, "Incorrect Username. Try again?", JOptionPane.YES_NO_OPTION);
-					    	if (reply == JOptionPane.YES_OPTION) {
-					    		loop = true;
-					    	}
-					    	else if(reply == JOptionPane.NO_OPTION)
-					    	{
-					    		f.dispose();
-					    		loop = false;
-					    		loop2 = false;
-					    		menuStart();
-					    	}
-					    }
-					    else
-					    {
-					    	loop = false;
-					    }				    
-					    }
-					    
-					    while(loop2)
-					    {
-					    	Object adminPassword = JOptionPane.showInputDialog(f, "Enter Administrator Password;");
-					    	
-					    	   if(!adminPassword.equals("admin11"))//search admin list for admin with matching admin password
-							    {
-							    	int reply  = JOptionPane.showConfirmDialog(null, null, "Incorrect Password. Try again?", JOptionPane.YES_NO_OPTION);
-							    	if (reply == JOptionPane.YES_OPTION) {
-							    		
-							    	}
-							    	else if(reply == JOptionPane.NO_OPTION){
-							    		f.dispose();
-							    		loop2 = false;
-							    		menuStart();
-							    	}
-							    }
-					    	   else
-					    	   {
-					    		   loop2 =false;
-					    		   cont = true;
-					    	   }
-					    }
-					    	
-					    if(cont)
-					    {
+					Authentication auth = new Authentication();
+					if(auth.authenticateAdmin(f)) {
 						f.dispose();
-					    	loop = false;
-					    admin();					    
-					    }					    
+						admin();
+					} else {
+						f.dispose();
+						menuStart();
+					}
 					}
 					//----------------------------------------------------------------------------------------------------------------
 					
@@ -250,45 +204,15 @@ public class Main extends JFrame{
 					//if user selects CUSTOMER ---------------------------------------------------------------------------------------- 
 					if(user.equals("Customer")	)
 					{
-						boolean loop2 = true;
-						boolean cont = false;
-						Customer customer = new CustomerLookup(f, "Enter Customer ID:") {
-							protected void onCancel() {
-								f.dispose();
-								menuStart();
-							}
-						}.lookup();
-
-					    if(customer != null) {
-					    while(loop2)
-					    {
-					    	Object customerPassword = JOptionPane.showInputDialog(f, "Enter Customer Password;");
-					    	
-					    	   if(!customer.getPassword().equals(customerPassword))//check if custoemr password is correct
-							    {
-							    	int reply  = JOptionPane.showConfirmDialog(null, null, "Incorrect password. Try again?", JOptionPane.YES_NO_OPTION);
-							    	if (reply == JOptionPane.YES_OPTION) {
-							    		
-							    	}
-							    	else if(reply == JOptionPane.NO_OPTION){
-							    		f.dispose();
-							    		loop2 = false;
-							    		menuStart();
-							    	}
-							    }
-					    	   else
-					    	   {
-					    		   loop2 =false;
-					    		   cont = true;
-					    	   }
-					    }
-					    	
-					    if(cont)
-					    {
+					Authentication auth = new Authentication();
+					Customer c = auth.authenticateCustomer(f);
+					if(c != null) {
 						f.dispose();
-					    	customer(customer);
-					    }
-					    }
+						customer(c);
+					} else {
+						f.dispose();
+						menuStart();
+					}
 					}
 					//-----------------------------------------------------------------------------------------------------------------------
 				}
