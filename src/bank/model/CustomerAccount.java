@@ -1,6 +1,7 @@
 package bank.model;
 
 import java.util.ArrayList;
+import java.util.Date;
 import bank.strategy.AccountFeeStrategy;
 import bank.strategy.InterestStrategy;
 import bank.strategy.WithdrawalStrategy;
@@ -45,9 +46,13 @@ public class CustomerAccount  {
 		return this.balance;
 	}
 	
-	public ArrayList getTransactionList()
+	public ArrayList<AccountTransaction> getTransactionList()
 	{
 		return this.transactionList;
+	}
+
+	public void addTransaction(String type, double amount) {
+		transactionList.add(new AccountTransaction(new Date().toString(), type, amount));
 	}
 
 	//Mutator methods
@@ -61,7 +66,7 @@ public class CustomerAccount  {
 		this.balance = balance;
 	}
 	
-	public void setTransactionList(ArrayList transactionList)
+	public void setTransactionList(ArrayList<AccountTransaction> transactionList)
 	{
 		this.transactionList = transactionList;
 	}

@@ -152,5 +152,16 @@ Fixed some bugs for the view all customers list where the index would go out of 
 
 Same for a NPE i get when I press cancel on lodge / withdraw amount.
 
-Implimented the Delete account that was half commented out and the running total. 
+Implimented the Delete account that was half commented out and the running total.
 
+# Commit 13 (main)
+
+Refactoring pass to remove duplication
+
+Extraced repeated date/transaction creation block out of all 4 command classes into one addTransaction
+
+Extract repeated account selection loopto a private getSelectedAccount
+
+Move isNumeric into a new BankUtils class as the fqn was ugly
+
+Fixed ArrayList types on getTransactionList and setTransactionList

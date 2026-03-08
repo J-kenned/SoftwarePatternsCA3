@@ -4,6 +4,7 @@ import bank.model.CustomerAccount;
 import bank.model.CustomerCurrentAccount;
 import bank.command.Command;
 import bank.command.CommandInvoker;
+import bank.util.BankUtils;
 import javax.swing.*;
 
 public abstract class AuthenticatedTransaction {
@@ -47,6 +48,14 @@ public abstract class AuthenticatedTransaction {
                 return false;
             }
             String pin = JOptionPane.showInputDialog(frame, "Enter 4 digit PIN;");
+            if(pin == null) return false;
+            if(!BankUtils.isNumeric(pin)) {
+                count--;
+                JOptionPane.showMessageDialog(frame,
+                    "Invalid PIN. " + count + " attempts remaining.",
+                    "Pin", JOptionPane.INFORMATION_MESSAGE);
+                continue;
+            }
             int entered = Integer.parseInt(pin);
             if(checkPin == entered) {
                 JOptionPane.showMessageDialog(frame, "Pin entry successful",
@@ -65,10 +74,4 @@ public abstract class AuthenticatedTransaction {
     protected abstract Command createCommand(double amount);
     protected abstract void displayResult(Command command, double amount);
 
-    public static boolean isNumeric(String str) {
-        if(str == null) return false;
-        try { Double.parseDouble(str); }
-        catch(NumberFormatException nfe) { return false; }
-        return true;
-    }
 }

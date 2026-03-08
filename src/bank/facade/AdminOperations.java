@@ -15,6 +15,7 @@ import bank.factory.CurrentAccountFactory;
 import bank.factory.DepositAccountFactory;
 import bank.repository.CustomerRepository;
 import bank.template.CustomerLookup;
+import bank.util.BankUtils;
 
 public class AdminOperations {
     private final Runnable goToAdmin;
@@ -178,13 +179,7 @@ public class AdminOperations {
 						else
 						{
 
-					for(int i = 0; i < customer.getAccounts().size(); i++)
-				    {
-				    	if(customer.getAccounts().get(i).getNumber() == box.getSelectedItem() )
-				    	{
-				    		acc = customer.getAccounts().get(i);
-				    	}
-				    }
+					acc = getSelectedAccount(box, customer);
 
 					continueButton.addActionListener(new ActionListener(  ) {
 						public void actionPerformed(ActionEvent ae) {
@@ -285,13 +280,7 @@ public class AdminOperations {
 						else
 						{
 
-					for(int i = 0; i < customer.getAccounts().size(); i++)
-				    {
-				    	if(customer.getAccounts().get(i).getNumber() == box.getSelectedItem() )
-				    	{
-				    		acc = customer.getAccounts().get(i);
-				    	}
-				    }
+					acc = getSelectedAccount(box, customer);
 
 					continueButton.addActionListener(new ActionListener(  ) {
 						public void actionPerformed(ActionEvent ae) {
@@ -302,7 +291,7 @@ public class AdminOperations {
 						 	while(loop)
 						 	{
 							String interestString = JOptionPane.showInputDialog(f, "Enter interest percentage you wish to apply: \n NOTE: Please enter a numerical value. (with no percentage sign) \n E.g: If you wish to apply 8% interest, enter '8'");
-							if(bank.template.AuthenticatedTransaction.isNumeric(interestString))
+							if(BankUtils.isNumeric(interestString))
 							{
 
 								interest = Double.parseDouble(interestString);
@@ -364,8 +353,6 @@ public class AdminOperations {
 
 			    if(result != null) {
 				customer = result;
-
-				f.dispose();
 
 				f.dispose();
 				f = new JFrame("Administrator Menu");
@@ -831,12 +818,7 @@ public class AdminOperations {
 
 						deleteButton.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent ae2) {
-								CustomerAccount selectedAcc = null;
-								for (int i = 0; i < customer.getAccounts().size(); i++) {
-									if(customer.getAccounts().get(i).getNumber() == box.getSelectedItem()) {
-										selectedAcc = customer.getAccounts().get(i);
-									}
-								}
+								CustomerAccount selectedAcc = getSelectedAccount(box, customer);
 
 								if(selectedAcc != null && selectedAcc.getBalance() == 0) {
 									customer.getAccounts().remove(selectedAcc);
@@ -866,5 +848,15 @@ public class AdminOperations {
 				goToMenuStart.run();
 			}
 	     });
+	}
+
+	private CustomerAccount getSelectedAccount(JComboBox<String> box, Customer customer) {
+		String selected = (String) box.getSelectedItem();
+		for (CustomerAccount account : customer.getAccounts()) {
+			if (account.getNumber().equals(selected)) {
+				return account;
+			}
+		}
+		return null;
 	}
 }

@@ -260,7 +260,7 @@ public class Main extends JFrame{
 	   
 	    for(int i = 0; i<e.getAccounts().size(); i++)
 	    {
-	    	if(e.getAccounts().get(i).getNumber() == box.getSelectedItem() )
+	    	if(e.getAccounts().get(i).getNumber().equals(box.getSelectedItem()) )
 	    	{
 	    		acc = e.getAccounts().get(i);
 	    	}

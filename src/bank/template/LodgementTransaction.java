@@ -4,6 +4,7 @@ import bank.model.CustomerAccount;
 import bank.command.Command;
 import bank.command.CommandInvoker;
 import bank.command.customer.DepositCommand;
+import bank.util.BankUtils;
 import javax.swing.*;
 
 public class LodgementTransaction extends AuthenticatedTransaction {
@@ -21,7 +22,7 @@ public class LodgementTransaction extends AuthenticatedTransaction {
 
     protected double requestAmount() {
         String balanceTest = JOptionPane.showInputDialog(frame, "Enter amount you wish to lodge:");
-        if(isNumeric(balanceTest)) {
+        if(BankUtils.isNumeric(balanceTest)) {
             return Double.parseDouble(balanceTest);
         } else {
             JOptionPane.showMessageDialog(frame, "You must enter a numerical value!",

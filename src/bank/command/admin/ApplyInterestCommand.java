@@ -2,9 +2,6 @@ package bank.command.admin;
 
 import bank.command.Command;
 import bank.model.CustomerAccount;
-import bank.model.AccountTransaction;
-import java.util.Date;
-
 public class ApplyInterestCommand implements Command {
 	private final CustomerAccount account;
 	private final double rate;
@@ -19,10 +16,7 @@ public class ApplyInterestCommand implements Command {
 	public void execute() {
 		interestApplied = account.getInterestStrategy().calculateInterest(account.getBalance(), rate);
 		account.setBalance(account.getBalance() + interestApplied);
-		Date date = new Date();
-		String date2 = date.toString();
-		AccountTransaction transaction = new AccountTransaction(date2, "Interest", interestApplied);
-		account.getTransactionList().add(transaction);
+		account.addTransaction("Interest", interestApplied);
 	}
 
 	public double getInterestApplied() {

@@ -2,9 +2,6 @@ package bank.command.customer;
 
 import bank.command.Command;
 import bank.model.CustomerAccount;
-import bank.model.AccountTransaction;
-import java.util.Date;
-
 public class WithdrawCommand implements Command {
 	private final CustomerAccount account;
 	private final double amount;
@@ -26,11 +23,7 @@ public class WithdrawCommand implements Command {
 			return;
 		}
 		account.setBalance(account.getBalance() - amount);
-		Date date = new Date();
-		String date2 = date.toString();
-		String type = "Withdraw";
-		AccountTransaction transaction = new AccountTransaction(date2, type, amount);
-		account.getTransactionList().add(transaction);
+		account.addTransaction("Withdraw", amount);
 	}
 
 	public String getResultMessage() {
